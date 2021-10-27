@@ -1,3 +1,11 @@
+/**
+ * TETRIS ->
+ * cosas que faltan:
+ * UI (score, lines, level) -> lado derecho de la pantalla.
+ * definir Level y Piezas por separado (ahora mismo es un bardo)
+ * Definir game over , restart , una pantalla de titulo.
+ */
+
 #include <time.h>
 #include <SFML/Graphics.hpp>
 const int m_roomWidth = 10;
@@ -37,8 +45,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(320, 480), "Tetris!");
     sf::Texture m_tetraTex;
     sf::Texture m_frameTex;
-    m_tetraTex.loadFromFile("../Images/tiles.png");
-    m_frameTex.loadFromFile("../Images/frame.png");
+    m_tetraTex.loadFromFile("../Images/tetris.png");
+    m_frameTex.loadFromFile("../Images/tetris-frame.png");
     sf::Sprite m_tetraSpr(m_tetraTex);
     sf::Sprite m_frameSpr(m_frameTex);
     m_tetraSpr.setTextureRect(sf::IntRect(0, 0, 18, 18));
