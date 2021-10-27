@@ -25,18 +25,18 @@ int Piezas[7][4] =
         };
 bool CheckCollision()
 {
-    for(int i=0;i<4;i++)
+    for(auto & tetra : TetraA)
     {
-        if(TetraA[i].PosX <0||TetraA[i].PosX >=m_roomWidth || TetraA[i].PosY >= m_roomHeight)
+        if(tetra.PosX < 0 || tetra.PosX >= m_roomWidth || tetra.PosY >= m_roomHeight)
         {
-            return 0;
+            return false;
         }
-        else if (Level[TetraA[i].PosY] [TetraA[i].PosX])
+        else if (Level[tetra.PosY] [tetra.PosX])
         {
-            return 0;
+            return false;
         }
     }
-    return 1;
+    return true;
 }
 
 int main()
@@ -54,7 +54,7 @@ int main()
     int ColorNum = 1;
     bool bRotate = false;
     float timer = 0.0f;
-    float delay = 0.3f;
+    float delay = 0.5f;
     sf::Clock m_clock;
 
     while (window.isOpen())
@@ -93,12 +93,12 @@ int main()
         if(bRotate)
         {
           Tetra pivot = TetraA[1];
-          for (int i = 0; i < 4; i++)
+          for (auto & tetra : TetraA)
           {
-             int tempX = TetraA[i].PosY - pivot.PosY;
-             int tempY = TetraA[i].PosX - pivot.PosX;
-             TetraA[i].PosX = pivot.PosX - tempX;
-             TetraA[i].PosY = pivot.PosY + tempY;
+             int tempX = tetra.PosY - pivot.PosY;
+             int tempY = tetra.PosX - pivot.PosX;
+              tetra.PosX = pivot.PosX - tempX;
+              tetra.PosY = pivot.PosY + tempY;
           }
           if(!CheckCollision())
           {
@@ -117,16 +117,15 @@ int main()
                  TetraA[i].PosY +=1;
              }
              if(!CheckCollision()) {
-                 for (int i = 0; i < 4; i++)
+                 for (auto & tetra : TetraB)
                  {
-                     Level[TetraB[i].PosY][TetraB[i].PosX] = ColorNum;
+                     Level[tetra.PosY][tetra.PosX] = ColorNum;
                  }
-                 int n = rand() % 7;
-                 ColorNum = 1 + n;
+                 ColorNum = 1+ rand() % 7;
                  for (int i = 0; i < 4; i++)
                  {
-                    TetraA[i].PosX = Piezas[n][i] % 2;
-                    TetraA[i].PosY = Piezas[n][i] / 2;
+                    TetraA[i].PosX = Piezas[ColorNum][i] % 2;
+                    TetraA[i].PosY = Piezas[ColorNum][i] / 2;
                  }
              }
              timer = 0;
@@ -144,15 +143,17 @@ int main()
                  }
                  Level[k][x] = Level[y][x];
              }
+             // if count is less than the room for pieces.. means that the line is full --> delete the line.
              if(count < m_roomWidth)
              {
                  k--;
+                 // TODO : add score and lines.
              }
          }
          //Reset position and rotation
          PiezaPosX =0;
          bRotate= false;
-         delay =0.3f;
+         delay =0.5f;
 
          // DRAW
          window.clear(sf::Color::Black);
@@ -173,10 +174,10 @@ int main()
          }
 
         // se mueve un poquito a cada tick.
-        for(int i=0;i<4;i++)
+        for(auto & tetra : TetraA)
         {
             m_tetraSpr.setTextureRect(sf::IntRect(ColorNum * 18, 0, 18, 18));
-            m_tetraSpr.setPosition(TetraA[i].PosX * 18.0f, TetraA[i].PosY * 18.0f);
+            m_tetraSpr.setPosition(tetra.PosX * 18, tetra.PosY * 18);
             m_tetraSpr.move(28, 31);
             window.draw(m_tetraSpr);
         }
