@@ -7,11 +7,16 @@
  */
 
 #include <time.h>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 const int m_roomWidth = 10;
 const int m_roomHeight = 20;
+int m_lines = 0;
+int m_bestLines = 2;
 int Level[m_roomHeight][m_roomWidth] = {0};
-struct Tetra {int PosX, PosY;}TetraA[4],TetraB[4];
+struct TetraST {int PosX, PosY;};
+TetraST TetraA[4];
+TetraST TetraB[4];
 // defino piezas
 int Piezas[7][4] =
         {
@@ -43,15 +48,14 @@ int main()
 {
     srand(time(nullptr));
     sf::RenderWindow window(sf::VideoMode(320, 480), "Tetris!");
-    sf::Texture m_tetraTex;
-    sf::Texture m_frameTex;
+    sf::Texture m_tetraTex,m_frameTex;
     m_tetraTex.loadFromFile("../Images/tetris.png");
     m_frameTex.loadFromFile("../Images/tetris-frame.png");
-    sf::Sprite m_tetraSpr(m_tetraTex);
-    sf::Sprite m_frameSpr(m_frameTex);
-    m_tetraSpr.setTextureRect(sf::IntRect(0, 0, 18, 18));
+    sf::Sprite m_tetraSpr(m_tetraTex),m_frameSpr(m_frameTex);
+    //TODO: añadir font y text para la ui.
     int PiezaPosX = 0;
     int ColorNum = 1;
+    m_lines = 0;
     bool bRotate = false;
     float timer = 0.0f;
     float delay = 0.5f;
@@ -81,7 +85,6 @@ int main()
             TetraB[i] = TetraA[i];
             TetraA[i].PosX += PiezaPosX;
         }
-        //Collsion
         if(!CheckCollision())
         {
             for(int i=0;i<4;i++)
@@ -92,7 +95,7 @@ int main()
 
         if(bRotate)
         {
-          Tetra pivot = TetraA[1];
+          TetraST pivot = TetraA[1];
           for (auto & tetra : TetraA)
           {
              int tempX = tetra.PosY - pivot.PosY;
@@ -122,7 +125,7 @@ int main()
                  {
                      Level[tetra.PosY][tetra.PosX] = ColorNum;
                  }
-                 int n = 1;//rand() % 7;
+                 int n = rand() % 7;
                  ColorNum = 1+ n;
                  for (int i = 0; i < 4; i++)
                  {
@@ -133,7 +136,7 @@ int main()
              timer = 0;
          }
          // Check Lines
-         int k = m_roomHeight -1;
+         int currentLine = m_roomHeight - 1;
          for(int y= m_roomHeight-1;y>0;y--)
          {
              int count =0;
@@ -143,13 +146,22 @@ int main()
                  {
                      count++;
                  }
-                 Level[k][x] = Level[y][x];
+                 Level[currentLine][x] = Level[y][x];
              }
              // if count is less than the room for pieces.. means that the line is full --> delete the line.
              if(count < m_roomWidth)
              {
-                 k--;
-                 // TODO : add score and lines.
+                 currentLine--;
+                 /**
+                  *                      // TODO : add score and lines.
+                     m_lines++;
+                     std::cout << "Lines :"<< m_lines << std::endl;
+                     if(m_bestLines < m_lines)
+                     {
+                         m_bestLines = m_lines;
+                         std::cout << "RECORD :"<< m_bestLines << std::endl;
+                     }
+                  */
              }
          }
          //Reset position and rotation
@@ -174,12 +186,11 @@ int main()
                  window.draw(m_tetraSpr);
              }
          }
-
         // se mueve un poquito a cada tick.
-        for(auto & tetra : TetraA)
+        for(auto & i : TetraA)
         {
             m_tetraSpr.setTextureRect(sf::IntRect(ColorNum * 18, 0, 18, 18));
-            m_tetraSpr.setPosition(tetra.PosX * 18, tetra.PosY * 18);
+            m_tetraSpr.setPosition(i.PosX * 18, i.PosY * 18);
             m_tetraSpr.move(28, 31);
             window.draw(m_tetraSpr);
         }
