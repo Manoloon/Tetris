@@ -116,16 +116,18 @@ int main()
                  TetraB[i]=TetraA[i];
                  TetraA[i].PosY +=1;
              }
-             if(!CheckCollision()) {
+             if(!CheckCollision())
+             {
                  for (auto & tetra : TetraB)
                  {
                      Level[tetra.PosY][tetra.PosX] = ColorNum;
                  }
-                 ColorNum = 1+ rand() % 7;
+                 int n = 1;//rand() % 7;
+                 ColorNum = 1+ n;
                  for (int i = 0; i < 4; i++)
                  {
-                    TetraA[i].PosX = Piezas[ColorNum][i] % 2;
-                    TetraA[i].PosY = Piezas[ColorNum][i] / 2;
+                    TetraA[i].PosX = Piezas[n][i] % 2;
+                    TetraA[i].PosY = Piezas[n][i] / 2;
                  }
              }
              timer = 0;
