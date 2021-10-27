@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.19)
+project(TetrisPieza)
+set(SFML_STATIC_LIBRARIES TRUE)
+set(CMAKE_CXX_STANDARD 17)
+find_package(SFML 2.5 COMPONENTS system window graphics)
+add_executable(TetrisPieza main.cpp matrix.cpp matrix.h Level.cpp Level.h)
+target_link_libraries(TetrisPieza sfml-system sfml-window sfml-graphics -static)
